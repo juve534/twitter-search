@@ -1,12 +1,12 @@
 <?php
 require_once dirname(__FILE__) . '/vendor/autoload.php';
-use \Abraham\TwitterOAuth\TwitterOAuth;
+require_once dirname(__FILE__) . '/class/Twitter.php';
 use \Mackerel\Client;
 
 class TwitterSearch
 {
     /**
-     * @var TwitterOAuth
+     * @var Twitter
      */
     private $_twitterClient;
 
@@ -19,19 +19,15 @@ class TwitterSearch
     {
         $dotEnv = new Dotenv\Dotenv(__DIR__);
         $dotEnv->load();
+
+        $this->_twitterClient = new Twitter();
     }
 
     public function execute() : int
     {
-        $this->initTwitterClient();
-
         // TwitterAPIを実行
         $search = getenv('TWITTER_SEARCH_WORD');
-        $params = [
-            'q'     => $search,
-            'count' => 100,
-        ];
-        $tweets = $this->_twitterClient->get('search/tweets', $params);
+        $tweets = $this->_twitterClient->getTweets($search);
 
         // 集計時間から5分以内の呟きのみカウントする
         $count = 0;
@@ -58,22 +54,6 @@ class TwitterSearch
         $this->_mackerel->postMetrics([$metric]);
 
         return $count;
-    }
-
-    /**
-     * Twitterクライアント生成
-     *
-     * @return bool
-     */
-    private function initTwitterClient() : bool
-    {
-        $consumerKey       = getenv('TWITTER_CONSUMER_KEY');
-        $consumerSecret    = getenv('TWITTER_CONSUMER_SECRET');
-        $accessToken       = getenv('TWITTER_ACCESS_TOKEN');
-        $accessTokenSecret = getenv('TWITTER_ACCESS_TOKEN_SECRET');
-
-        $this->_twitterClient = new TwitterOAuth($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
-        return true;
     }
 
     private function initMackerelClient()

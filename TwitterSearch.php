@@ -1,6 +1,4 @@
 <?php
-require_once dirname(__FILE__) . '/vendor/autoload.php';
-require_once dirname(__FILE__) . '/class/Twitter.php';
 use \Mackerel\Client;
 
 class TwitterSearch
@@ -17,9 +15,6 @@ class TwitterSearch
 
     public function __construct()
     {
-        $dotEnv = new Dotenv\Dotenv(__DIR__);
-        $dotEnv->load();
-
         $this->_twitterClient = new Twitter();
     }
 
@@ -64,11 +59,3 @@ class TwitterSearch
         return true;
     }
 }
-$timeZone = new \DateTimeZone('Asia/Tokyo');
-echo (new \DateTime('now', $timeZone))->format('Y-m-d H:i:s') . PHP_EOL;
-
-$obj   = new TwitterSearch();
-$count = $obj->execute();
-
-echo $count . PHP_EOL;
-echo (new \DateTime('now', $timeZone))->format('Y-m-d H:i:s') . PHP_EOL;

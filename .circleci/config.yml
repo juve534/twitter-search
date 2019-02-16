@@ -19,12 +19,6 @@ jobs:
     steps:
       - checkout
       - run: composer install -n --prefer-dist
- 
-      # run tests!
-      - run:
-          name: direct
-          command: |
-              cat error.php
               
       - run:
           name: Check Syntax Error

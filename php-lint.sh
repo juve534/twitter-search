@@ -1,6 +1,6 @@
 #!/bin/sh
 
-RESULT=`find . -type f -name "*.php" -exec php -l {} \; 2>&1 | grep "PHP Parse error"`
+RESULT=`find . -type f -name "*.php" -exec php -l {} \; 2>&1 | grep "Parse error"`
 
 if [ "$RESULT" != "" ];then
     echo "$RESULT"

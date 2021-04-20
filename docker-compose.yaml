@@ -1,0 +1,18 @@
+version: '3.7'
+
+volumes:
+  logs:
+    driver: local
+
+services:
+  app:
+    # https://github.com/juve534/TIL/pull/132 で作成したイメージを流用
+    image: juve534/php-fpm:8.0
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - search_net
+
+networks:
+  search_net:
+    driver: bridge

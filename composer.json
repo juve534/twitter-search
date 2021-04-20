@@ -10,7 +10,7 @@
         }
     },
     "require": {
-        "abraham/twitteroauth": "^0.7.4",
+        "abraham/twitteroauth": "^2.0",
         "vlucas/phpdotenv": "^2.4",
         "ariarijp/mackerel-client": "dev-master"
     }

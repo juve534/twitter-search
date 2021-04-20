@@ -1,4 +1,14 @@
 {
+    "autoload": {
+        "psr-4": {
+            "Juve534\\TwitterSearch\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "require": {
         "abraham/twitteroauth": "^0.7.4",
         "vlucas/phpdotenv": "^2.4",

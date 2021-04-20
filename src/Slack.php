@@ -1,4 +1,9 @@
 <?php
+
+declare(strict_types=1);
+
+namespace Juve534\TwitterSearch;
+
 use \GuzzleHttp\Client;
 
 /**
@@ -13,9 +18,9 @@ class Slack
 
     private $webHookUrl;
 
-    public function __construct()
+    public function __construct(Client $client)
     {
-        $this->client = new Client();
+        $this->client = $client;
         $this->webHookUrl = getenv('WEB_HOOK_URL');
     }
 

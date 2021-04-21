@@ -2,36 +2,29 @@
 
 declare(strict_types=1);
 
-namespace Juve534\TwitterSearch;
+namespace Juve534\TwitterSearch\Services;
 
 use \Abraham\TwitterOAuth\TwitterOAuth;
 
 class TwitterService
 {
-    /**
-     * @var TwitterOAuth
-     */
-    private $_twitterClient;
-
-    public function __construct()
-    {
-        $this->initTwitterClient();
-    }
+    public function __construct(private TwitterOAuth $twitterOAuth)
+    {}
 
     /**
      * Twitterクライアント生成
      *
-     * @return bool
+     * @return TwitterService
      */
-    private function initTwitterClient() : bool
+    public static function create() : TwitterService
     {
         $consumerKey       = getenv('TWITTER_CONSUMER_KEY');
         $consumerSecret    = getenv('TWITTER_CONSUMER_SECRET');
         $accessToken       = getenv('TWITTER_ACCESS_TOKEN');
         $accessTokenSecret = getenv('TWITTER_ACCESS_TOKEN_SECRET');
 
-        $this->_twitterClient = new TwitterOAuth($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
-        return true;
+        $twitterOAuth = new TwitterOAuth($consumerKey, $consumerSecret, $accessToken, $accessTokenSecret);
+        return new self($twitterOAuth);
     }
 
     /**
@@ -48,6 +41,6 @@ class TwitterService
             'q'     => $search,
             'count' => $count,
         ];
-        return $this->_twitterClient->get('search/tweets', $params);
+        return $this->twitterOAuth->get('search/tweets', $params);
     }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Juve534\TwitterSearch;
+namespace Juve534\TwitterSearch\Services;
 
 use \GuzzleHttp\Client;
 
@@ -11,18 +11,14 @@ use \GuzzleHttp\Client;
  */
 class SlackService implements NotificationServiceInterface
 {
-    /** @see Client */
-    private Client $client;
-
     private string $webHookUrl;
 
-    public function __construct(Client $client)
+    public function __construct(private Client $client)
     {
-        $this->client = $client;
         $this->webHookUrl = getenv('WEB_HOOK_URL');
     }
 
-    public function sendMessage(string $text): void
+    public function sendMessage(string|int $text): void
     {
         $uri = $this->webHookUrl;
         $options = [

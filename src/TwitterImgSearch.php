@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-use Juve534\TwitterSearch\TwitterService;
-use Juve534\TwitterSearch\NotificationServiceInterface;
+namespace Juve534\TwitterSearch;
+
+use Juve534\TwitterSearch\Services\TwitterService;
+use Juve534\TwitterSearch\Services\NotificationServiceInterface;
 
 /**
  * Twitterで検索した結果、出て来る画像をランダムでSlackに通知する

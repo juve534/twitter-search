@@ -2,8 +2,10 @@
 declare(strict_types=1);
 
 require_once dirname(__FILE__) . '/vendor/autoload.php';
-require_once dirname(__FILE__) . '/class/Twitter.php';
-require_once dirname(__FILE__) . '/class/Slack.php';
+
+use Juve534\TwitterSearch;
+use Juve534\TwitterSearch\TwitterImgSearch;
+use \GuzzleHttp\Client;
 
 if (empty($argv[1]) || !is_string($argv[1])) {
     echo 'STOP ' . PHP_EOL;
@@ -14,24 +16,30 @@ if (empty($argv[1]) || !is_string($argv[1])) {
 $dotEnv = new Dotenv\Dotenv(__DIR__);
 $dotEnv->load();
 
-$command  = $argv[1];
-$fileName = $command . '.php';
-if (!file_exists($fileName)) {
-    throw new RuntimeException('Not Found File : ' . $fileName);
-}
-
-require_once dirname(__FILE__) . '/' . $command . '.php';
-
-if (!class_exists($command)) {
-    throw new RuntimeException('Not Found Class : ' . $command);
-}
-
+$guzzle = new Client();
+$slack = new TwitterSearch\Services\SlackService($guzzle);
 try {
     // バッチ処理の実行
     $timeZone = new \DateTimeZone('Asia/Tokyo');
     echo 'START : ' . (new \DateTime('now', $timeZone))->format('Y-m-d H:i:s') . PHP_EOL;
 
-    $obj    = new $command();
+    $twitterService = TwitterSearch\Services\TwitterService::create();
+    $command  = $argv[1];
+    switch ($command) {
+        case 'TwitterImgSearch':
+            $obj = new TwitterImgSearch($twitterService, $slack);
+            break;
+        case 'TwitterSearch':
+            $mackerelService = new TwitterSearch\Services\MackerelService(new Mackerel\Client([
+                'mackerel_api_key' => getenv('MACKEREL_API_KEY'),
+            ]));
+            $obj = new TwitterSearch\TwitterSearch($twitterService, $mackerelService);
+            break;
+        default:
+            throw new RuntimeException('Not Found Class : ' . $command);
+            break;
+    }
+
     $result = $obj->execute();
 
     echo $result . PHP_EOL;
@@ -41,6 +49,5 @@ try {
     $message .= (new \DateTime('now', $timeZone))->format('Y-m-d H:i:s') . PHP_EOL;
     $message .= $e->getMessage() . PHP_EOL;
 
-    $slack = new Slack();
-    $slack->sendToSlack($message);
+    $slack->sendMessage($message);
 }

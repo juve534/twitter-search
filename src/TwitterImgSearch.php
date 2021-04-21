@@ -1,25 +1,32 @@
 <?php
+
+declare(strict_types=1);
+
+namespace Juve534\TwitterSearch;
+
+use Juve534\TwitterSearch\Services\TwitterService;
+use Juve534\TwitterSearch\Services\NotificationServiceInterface;
+
 /**
  * Twitterで検索した結果、出て来る画像をランダムでSlackに通知する
  * Class TwitterImgSearch
  */
 class TwitterImgSearch
 {
-    /**
-     * @var Twitter
-     */
-    private $_twitterClient;
+    private TwitterService $client;
+    private NotificationServiceInterface $notification;
 
-    public function __construct()
+    public function __construct(TwitterService $client, NotificationServiceInterface $notification)
     {
-        $this->_twitterClient = new Twitter();
+        $this->client = $client;
+        $this->notification = $notification;
     }
 
-    public function execute() : string
+    public function execute() : string|bool
     {
         // TwitterAPIを実行
         $search = $this->getTwitterSearchWord();
-        $tweets = $this->_twitterClient->getTweets($search);
+        $tweets = $this->client->getTweets($search);
 
         if (!$tweets || !property_exists($tweets, 'statuses')) {
             echo 'No Tweet' . PHP_EOL;
@@ -48,8 +55,7 @@ class TwitterImgSearch
 
         $imageUrl = $imageList[rand(0, (count($imageList)))];
 
-        $slack = new Slack();
-        $slack->sendToSlack($imageUrl);
+        $this->notification->sendMessage($imageUrl);
 
         return $imageUrl;
     }

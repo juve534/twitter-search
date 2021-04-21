@@ -1,25 +1,24 @@
 <?php
+
+declare(strict_types=1);
+
+namespace Juve534\TwitterSearch\Services;
+
 use \GuzzleHttp\Client;
 
 /**
  * Class Slack
  */
-class Slack
+class SlackService implements NotificationServiceInterface
 {
-    /**
-     * @var Client
-     */
-    private $client;
+    private string $webHookUrl;
 
-    private $webHookUrl;
-
-    public function __construct()
+    public function __construct(private Client $client)
     {
-        $this->client = new Client();
         $this->webHookUrl = getenv('WEB_HOOK_URL');
     }
 
-    public function sendToSlack(string $text)
+    public function sendMessage(string|int $text): void
     {
         $uri = $this->webHookUrl;
         $options = [
@@ -28,22 +27,20 @@ class Slack
                 'text' => $text,
             ],
         ];
-        $response = $this->client->post($uri, $options);
-        return $response;
+        $this->client->post($uri, $options);
     }
 
     /**
      * Slack通知先をデフォルトから変更する
      *
      * @param string $url webhookのURL
-     * @return bool true
      */
-    public function setWebHookUrl(string $url) : bool
+    public function setWebHookUrl(string $url) : void
     {
         if (strpos($url, 'https') !== false) {
-            throw new LogicException('Invalid Url : ' . var_export($url, true));
+            throw new \LogicException('Invalid Url : ' . var_export($url, true));
         }
+
         $this->webHookUrl = $url;
-        return true;
     }
 }

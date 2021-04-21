@@ -1,4 +1,8 @@
 <?php
+
+declare(strict_types=1);
+
+use Juve534\TwitterSearch\Twitter;
 use \Mackerel\Client;
 
 class TwitterSearch
@@ -6,16 +10,16 @@ class TwitterSearch
     /**
      * @var Twitter
      */
-    private $_twitterClient;
+    private Twitter $_twitterClient;
 
     /**
      * @var Mackerel\Client
      */
-    private $_mackerel;
+    private Client $_mackerel;
 
-    public function __construct()
+    public function __construct(Twitter $client)
     {
-        $this->_twitterClient = new Twitter();
+        $this->_twitterClient = $client;
     }
 
     public function execute() : int

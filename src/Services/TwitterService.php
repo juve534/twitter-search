@@ -6,7 +6,7 @@ namespace Juve534\TwitterSearch;
 
 use \Abraham\TwitterOAuth\TwitterOAuth;
 
-class Twitter
+class TwitterService
 {
     /**
      * @var TwitterOAuth

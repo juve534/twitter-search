@@ -6,20 +6,23 @@ version: 2
 jobs:
   build:
     docker:
-      # specify the version you desire here
-      - image: circleci/php:7.1-browsers
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mysql:9.4
+      - image: cimg/php:8.0
 
     working_directory: ~/repo
 
     steps:
+      - run:
+          command: sudo pear config-set php_ini /etc/php/8.0/cli/php.ini
+          background: true
       - checkout
       - run: composer install -n --prefer-dist
-              
+      - run: sudo pecl install pcov xdebug
       - run:
           name: Check Syntax Error
           command: ./php-lint.sh
+      - run: mkdir -p ~/reports/coverage
+      - run: php -d pcov.enabled=1 ./vendor/bin/phpunit --coverage-html ~/reports/coverage tests/
+      - store_test_results:
+          path: ~/reports
+      - store_artifacts:
+          path: ~/reports

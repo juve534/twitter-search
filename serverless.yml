@@ -1,0 +1,30 @@
+service: twitter-search
+
+provider:
+    name: aws
+    region: ap-northeast-1
+    runtime: provided.al2
+
+plugins:
+    - ./vendor/bref/bref
+
+functions:
+    cron:
+        handler: Execute.php
+        layers:
+            - ${bref:layer.php-80} # PHP runtime
+            - ${bref:layer.console} # Console layer
+        events:
+            - schedule:
+                  rate: rate(1 hour)
+                  input: '"TwitterImgSearch"'
+
+# Exclude files from deployment
+package:
+    exclude:
+        - '.circleci/**'
+        - 'tests/**'
+        - 'docker-compose.yaml'
+        - '*.md'
+        - '.env.sample'
+        - '*.sh'

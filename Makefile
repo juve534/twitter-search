@@ -19,3 +19,6 @@ bref:
 
 sls:
 	docker-compose exec $(container) serverless $(CMD)
+
+test:
+	docker-compose exec $(container) vendor/phpunit/phpunit/phpunit tests

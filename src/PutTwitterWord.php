@@ -8,7 +8,7 @@ use Juve534\TwitterSearch\Services\NotificationServiceInterface;
 use Juve534\TwitterSearch\Services\TwitterService as Twitter;
 use Monolog\Logger;
 
-class TwitterSearch
+class PutTwitterWord
 {
     public function __construct(
         private Twitter $client,

@@ -6,11 +6,14 @@ namespace Juve534\TwitterSearch;
 
 use Juve534\TwitterSearch\Services\NotificationServiceInterface;
 use Juve534\TwitterSearch\Services\TwitterService as Twitter;
+use Monolog\Logger;
 
-class TwitterSearch
+class PutTwitterWord
 {
     public function __construct(
-        private Twitter $client, private NotificationServiceInterface $notification
+        private Twitter $client,
+        private NotificationServiceInterface $notification,
+        private Logger $logger
     )
     {}
 
@@ -18,6 +21,7 @@ class TwitterSearch
     {
         // TwitterAPIを実行
         $search = getenv('TWITTER_SEARCH_WORD');
+        $this->logger->info("searchWord", [$search]);
         $tweets = $this->client->getTweets($search);
 
         // 集計時間から5分以内の呟きのみカウントする

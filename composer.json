@@ -13,7 +13,8 @@
         "abraham/twitteroauth": "^2.0",
         "vlucas/phpdotenv": "^2.4",
         "ariarijp/mackerel-client": "dev-master",
-        "bref/bref": "^1.2"
+        "bref/bref": "^1.2",
+        "monolog/monolog": "^2.2"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5"

@@ -4,8 +4,9 @@ declare(strict_types=1);
 require_once dirname(__FILE__) . '/vendor/autoload.php';
 
 use Juve534\TwitterSearch;
-use Juve534\TwitterSearch\TwitterImgSearch;
 use \GuzzleHttp\Client;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 if (empty($argv[1]) || !is_string($argv[1])) {
     echo 'STOP ' . PHP_EOL;
@@ -25,15 +26,20 @@ try {
 
     $twitterService = TwitterSearch\Services\TwitterService::create();
     $command  = $argv[1];
+
+    $log = new Logger($command);
+    $handler = new StreamHandler('php://stdout', Logger::DEBUG);
+    $log->pushHandler($handler);
+
     switch ($command) {
         case 'TwitterImgSearch':
-            $obj = new TwitterImgSearch($twitterService, $slack);
+            $obj = new TwitterSearch\TwitterImgSearch($twitterService, $slack, $log);
             break;
-        case 'TwitterSearch':
+        case 'PutTwitterWord':
             $mackerelService = new TwitterSearch\Services\MackerelService(new Mackerel\Client([
                 'mackerel_api_key' => getenv('MACKEREL_API_KEY'),
             ]));
-            $obj = new TwitterSearch\TwitterSearch($twitterService, $mackerelService);
+            $obj = new TwitterSearch\PutTwitterWord($twitterService, $mackerelService, $log);
             break;
         default:
             throw new RuntimeException('Not Found Class : ' . $command);

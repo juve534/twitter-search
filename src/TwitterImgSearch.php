@@ -6,6 +6,7 @@ namespace Juve534\TwitterSearch;
 
 use Juve534\TwitterSearch\Services\TwitterService;
 use Juve534\TwitterSearch\Services\NotificationServiceInterface;
+use Monolog\Logger;
 
 /**
  * Twitterで検索した結果、出て来る画像をランダムでSlackに通知する
@@ -13,19 +14,18 @@ use Juve534\TwitterSearch\Services\NotificationServiceInterface;
  */
 class TwitterImgSearch
 {
-    private TwitterService $client;
-    private NotificationServiceInterface $notification;
-
-    public function __construct(TwitterService $client, NotificationServiceInterface $notification)
-    {
-        $this->client = $client;
-        $this->notification = $notification;
-    }
+    public function __construct(
+        private TwitterService $client,
+        private NotificationServiceInterface $notification,
+        private Logger $logger
+    )
+    {}
 
     public function execute() : string|bool
     {
         // TwitterAPIを実行
         $search = $this->getTwitterSearchWord();
+        $this->logger->info("searchWord", [$search]);
         $tweets = $this->client->getTweets($search);
 
         if (!$tweets || !property_exists($tweets, 'statuses')) {
@@ -54,6 +54,8 @@ class TwitterImgSearch
         }
 
         $imageUrl = $imageList[rand(0, (count($imageList)))];
+
+        $this->logger->info("imageList", $imageList);
 
         $this->notification->sendMessage($imageUrl);
 

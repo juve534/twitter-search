@@ -12,12 +12,12 @@ echo "シークレットアクセスキーを指定してください"
 echo -n 'aws_secret_access_key: '
 read aws_secret_access_key
 
-if [[ -n "${aws_access_key_id}" ]];then
+if [[ -z "${aws_access_key_id}" ]];then
   echo 'アクセスキーが指定されてません'
   exit 1
 fi
 
-if [[ -n "${aws_secret_access_key}" ]];then
+if [[ -z "${aws_secret_access_key}" ]];then
   echo 'シークレットアクセスキーが指定されてません'
   exit 1
 fi

@@ -53,7 +53,8 @@ class TwitterImgSearch
             }
         }
 
-        $imageUrl = $imageList[rand(0, (count($imageList)))];
+        $maxCount = (count($imageList) - 1);
+        $imageUrl = $imageList[rand(0, $maxCount)];
 
         $this->logger->info("imageList", $imageList);
 
@@ -70,6 +71,7 @@ class TwitterImgSearch
     private function getTwitterSearchWord() : string
     {
         $list = explode(',', getenv('TWITTER_SEARCH_IMG'));
-        return $list[rand(0, (count($list) - 1))];
+        $maxCount = (count($list) - 1);
+        return $list[rand(0, $maxCount)];
     }
 }

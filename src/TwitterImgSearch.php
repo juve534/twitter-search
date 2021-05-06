@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Juve534\TwitterSearch;
 
+use Juve534\TwitterSearch\Services\DynamoDBService;
+use Juve534\TwitterSearch\Services\MessageInterface;
 use Juve534\TwitterSearch\Services\TwitterService;
 use Juve534\TwitterSearch\Services\NotificationServiceInterface;
 use Monolog\Logger;
@@ -17,7 +19,9 @@ class TwitterImgSearch
     public function __construct(
         private TwitterService $client,
         private NotificationServiceInterface $notification,
-        private Logger $logger
+        private Logger $logger,
+        private MessageInterface $message,
+        private DynamoDBService $DBService
     )
     {}
 
@@ -58,19 +62,35 @@ class TwitterImgSearch
 
         $this->logger->info("imageList", $imageList);
 
+        $this->message->sendMessage(['word' => $search]);
+
         $this->notification->sendMessage($imageUrl);
 
         return $imageUrl;
     }
 
     /**
-     * 環境変数から検索を実行する文字を取得する
+     * 環境変数から検索を実行する文字を取得する.
+     * 前回の単語は対象から削除する.
      *
      * @return string 検索文字列
      */
     private function getTwitterSearchWord() : string
     {
-        $list = explode(',', getenv('TWITTER_SEARCH_IMG'));
+        $words = explode(',', getenv('TWITTER_SEARCH_IMG'));
+        $lastWord = $this->DBService->getAllItem()['word'];
+        $this->logger->info("lastWord", [$lastWord]);
+
+        $list = [];
+        foreach ($words AS $word) {
+            if ($word === $lastWord) {
+                continue;
+            }
+
+            $list[] = $word;
+        }
+        $this->logger->info("wordList", $list);
+        
         $maxCount = (count($list) - 1);
         return $list[rand(0, $maxCount)];
     }

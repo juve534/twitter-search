@@ -15,11 +15,12 @@ jobs:
           command: sudo pear config-set php_ini /etc/php/8.0/cli/php.ini
           background: true
       - checkout
-      - run: composer install -n --prefer-dist
-      - run: sudo pecl install pcov xdebug
       - run:
           name: Check Syntax Error
           command: ./php-lint.sh
+          background: true
+      - run: composer install -n --prefer-dist
+      - run: sudo pecl install pcov xdebug
       - run: mkdir -p ~/reports/coverage
       - run: php -d pcov.enabled=1 ./vendor/bin/phpunit --coverage-html ~/reports/coverage tests/
       - store_test_results:

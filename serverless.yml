@@ -11,13 +11,20 @@ provider:
                   Action:
                       - 'sqs:*'
                   Resource:
-                      - '手動で作成したarn'
+                      - 'Fn::Join':
+                            - ':'
+                            - - 'arn:aws:sqs'
+                              - Ref: 'AWS::Region'
+                              - Ref: 'AWS::AccountId'
+                              - 'tisqueue'
                 - Effect: 'Allow'
                   Action:
                       - 'dynamodb:PutItem'
                       - 'dynamodb:Scan'
                   Resource:
-                      - 'arnを手動で定義'
+                      Fn::GetAtt:
+                        - TwitterImgSearchTable
+                        - Arn
 
 plugins:
     - ./vendor/bref/bref
@@ -38,7 +45,14 @@ functions:
             - ${bref:layer.php-80}
         events:
             - sqs:
-                  arn: '手動で作成したarn'
+                  arn:
+                    'Fn::Join':
+                      - ':'
+                      - - 'arn:aws:sqs'
+                        - Ref: 'AWS::Region'
+                        - Ref: 'AWS::AccountId'
+                        - 'tisqueue'
+
 resources:
     Resources:
         TwitterImgSearchTable:

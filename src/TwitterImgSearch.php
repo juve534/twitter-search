@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Juve534\TwitterSearch;
 
+use Juve534\TwitterSearch\Services\MessageInterface;
 use Juve534\TwitterSearch\Services\TwitterService;
 use Juve534\TwitterSearch\Services\NotificationServiceInterface;
 use Monolog\Logger;
@@ -17,7 +18,8 @@ class TwitterImgSearch
     public function __construct(
         private TwitterService $client,
         private NotificationServiceInterface $notification,
-        private Logger $logger
+        private Logger $logger,
+        private MessageInterface $message,
     )
     {}
 
@@ -57,6 +59,8 @@ class TwitterImgSearch
         $imageUrl = $imageList[rand(0, $maxCount)];
 
         $this->logger->info("imageList", $imageList);
+
+        $this->message->sendMessage(['word' => $search]);
 
         $this->notification->sendMessage($imageUrl);
 

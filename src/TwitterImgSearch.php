@@ -29,7 +29,7 @@ class TwitterImgSearch
     {
         // TwitterAPIを実行
         $search = $this->getTwitterSearchWord();
-        $this->logger->info("searchWord", [$search]);
+        $this->logger->info('searchWord', [$search]);
         $tweets = $this->client->getTweets($search);
 
         if (!$tweets || !property_exists($tweets, 'statuses')) {
@@ -60,7 +60,7 @@ class TwitterImgSearch
         $maxCount = (count($imageList) - 1);
         $imageUrl = $imageList[rand(0, $maxCount)];
 
-        $this->logger->info("imageList", $imageList);
+        $this->logger->info('imageList', $imageList);
 
         $this->message->sendMessage(['word' => $search]);
 
@@ -86,7 +86,7 @@ class TwitterImgSearch
             'type' => 'lastWord',
         ]);
         $lastWord = (isset($record['word'])) ? $record['word'] : '';
-        $this->logger->info("lastWord", [$lastWord]);
+        $this->logger->info('lastWord', [$lastWord]);
 
         $list = [];
         foreach ($words AS $word) {
@@ -96,7 +96,7 @@ class TwitterImgSearch
 
             $list[] = $word;
         }
-        $this->logger->info("wordList", $list);
+        $this->logger->info('wordList', $list);
         
         $maxCount = (count($list) - 1);
         return $list[rand(0, $maxCount)];

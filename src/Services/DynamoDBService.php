@@ -42,4 +42,15 @@ class DynamoDBService
 
         return $result;
     }
+
+    public function getItem(array $params):array
+    {
+        $key = $this->marshal->marshalJson(\json_encode($params, flags: JSON_INVALID_UTF8_IGNORE));
+        $data = $this->client->getItem([
+            'TableName' => getenv('TWITTER_SEARCH_IMG_TABLE'),
+            'Key' => $key,
+        ]);
+
+        return $this->marshal->unmarshalItem($data->get('Item'));
+    }
 }

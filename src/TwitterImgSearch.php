@@ -77,8 +77,10 @@ class TwitterImgSearch
      */
     private function getTwitterSearchWord() : string
     {
-        $words = explode(',', getenv('TWITTER_SEARCH_IMG'));
-        $lastWord = $this->DBService->getItem([
+        $record = $this->DBService->getItem([
+            'type' => 'searchWords',
+        ]);
+        $words = (isset($record['words'])) ? $record['words'] : explode(',', getenv('TWITTER_SEARCH_IMG'));
             'type' => 'lastWord',
         ])['word'];
         $this->logger->info("lastWord", [$lastWord]);

@@ -18,6 +18,6 @@
         "aws/aws-sdk-php": "^3.180"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^12.5"
     }
 }
